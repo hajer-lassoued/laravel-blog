@@ -1,14 +1,25 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import '../css/app.css';
+import './bootstrap';
 
-function App() {
-    return (
-        <div className="p-10">
-            <h1 className="text-2xl font-bold text-blue-500">
-                React + Laravel + Tailwind 🚀
-            </h1>
-        </div>
-    )
-}
+import { createInertiaApp } from '@inertiajs/react';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createRoot } from 'react-dom/client';
 
-ReactDOM.createRoot(document.getElementById('app')).render(<App />)
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+createInertiaApp({
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) =>
+        resolvePageComponent(
+            `./Pages/${name}.jsx`,
+            import.meta.glob('./Pages/**/*.jsx'),
+        ),
+    setup({ el, App, props }) {
+        const root = createRoot(el);
+
+        root.render(<App {...props} />);
+    },
+    progress: {
+        color: '#4B5563',
+    },
+});
